@@ -1,0 +1,4 @@
+[ubuntu]
+192.168.100.96 ansible_ssh_pass=root123 ansible_ssh_user=alcid ansible_sudo_pass=root123
+[centos]
+192.168.100.97 ansible_ssh_pass=alcid ansible_ssh_user=alcid ansible_sudo_pass=alcid
