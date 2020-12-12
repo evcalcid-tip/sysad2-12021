@@ -1,0 +1,79 @@
+---
+- name: Install and Configure Apache 
+  hosts: 192.168.100.96
+  tasks:
+    - name: Installing Apache
+      apt:
+        name: apache2
+        state: latest
+        update_cache: yes
+    - name: Apache_index
+      copy:
+        content: "Hi"
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
+      register: Apache_index
+    - name: Start apache2 service
+      service:
+        name: apache2
+        state: restarted
+        enabled: yes
+      when: Apache_index.changed
+    - name: Whitelist apache2 in ufw
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+- name: Check web service if up
+  hosts: localhost
+  connection: local
+  become: no
+  tasks:
+    - name: Check web service if up
+      uri:
+        url: http://www.example.com
+
+- name: Install and Configure MySQL
+  hosts: 192.168.100.96
+  tasks:
+    - name: Installing MySQL
+      apt:
+        name: mysql-server
+        state: latest
+        update_cache: yes
+    - name: Mysql_index
+      copy:
+        content: "Hello"
+        dest: /var/www/html/index1.html
+        owner: root
+        group: root
+        mode: '0644'
+      register: Mysql_index
+    - name: Start MySQL service
+      service:
+        name: mysql
+        state: restarted
+        enabled: yes
+      when: Mysql_index.changed
+
+- name: Install and Configure PHP
+  hosts: 192.168.100.96
+  tasks:
+    - name: Installing PHP
+      apt:
+        name:
+          - php
+          - php-mysql
+          - libapache2-mod-php
+        state: latest
+        update_cache: yes
+    - name: PHP_index
+      copy:
+        content: "Hello World"
+        dest: /var/www/html/index2.html
+        owner: root
+        group: root
+        mode: '0644'        
