@@ -1,0 +1,14 @@
+---
+- hosts: all
+  
+  roles:
+    - apache
+    - mysql
+    - php
+
+- hosts: localhost
+  connection: local
+  become: no
+
+  roles:
+    - web_service

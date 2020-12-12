@@ -1,0 +1,5 @@
+---
+# tasks file for web_service
+- name: Check web service if up
+  uri:
+    url: http://www.example.com
