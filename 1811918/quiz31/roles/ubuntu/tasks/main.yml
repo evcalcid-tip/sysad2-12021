@@ -1,0 +1,58 @@
+---
+# tasks file for ubuntu
+- name: Install vsftpd
+  apt:
+    name: vsftpd
+    state: latest
+    update_cache: yes
+
+- name: Stop firewall
+  service:
+    name: ufw
+    state: stopped
+    enabled: no
+
+- name: Create ftpuser
+  user:
+    name: alcid2
+    password: $5$2VKyoJBPrQtxu5DO$UV2.FihiNtjPo/s4FaWwjKcHZwATH5UbktiWcswxev0
+    comment: "New FTP User"
+
+- name: Add DenyUsers in /etc/ssh/sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "DenyUsers alcid2"
+  register: sshd_config
+
+- name: restart sshd service
+  service:
+    name: sshd
+    state: restarted
+  when: sshd_config.changed
+
+- name: Create ftp directory
+  file:
+    path: /home/alcid2/ftp
+    state: directory
+    owner: nobody
+    group: nogroup
+    mode: '0555'
+
+- name: Create files directory
+  file:
+    path: /home/alcid2/ftp/files
+    state: directory
+    owner: alcid2
+    group: alcid2
+
+- name: Copy vsftpd.conf in /etc/vsftpd.conf
+  copy:
+    src: vsftpd.conf
+    dest: /etc/vsftpd.conf
+  register: vsftpd_config
+
+- name: Restart vsftpd.conf
+  service:
+    name: vsftpd
+    state: restarted
+  when: vsftpd_config.changed
