@@ -1,0 +1,52 @@
+---
+# tasks file for ubuntu
+- name: Install apache2
+  apt:
+    name: apache2
+    state: latest
+    update_cache: yes
+
+- name: Stop firewall
+  service:
+    name: ufw
+    state: stopped
+    enabled: no
+
+- name: Create apache2 user
+  user:
+    name: alcid3
+    password: $5$jRxQgDojMCzZTxv0$d/n8B17bmK0QoByK57hnz1y7CCiAzGQ7nBsK212dXd9
+    comment: "Apache2 User"
+
+- name: Add DenyUser in /etc/ssh/sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "DenyUsers alcid3"
+  register: sshd_config
+
+- name: Restart sshd service
+  service:
+    name: sshd
+    state: restarted
+  when: sshd_config.changed
+
+- name: Create domain directory
+  file:
+    path: /var/www/alcid3
+    state: directory
+    owner: alcid3
+    group: alcid3
+    mode: '755'
+
+- name: Create index.html
+  copy:
+    content: "Eugene Vincent Alcid was here"
+    dest: /var/www/alcid3/index.html
+  register: apache_index
+
+- name: Start Apache2 service
+  service:
+    name: apache2
+    state: restarted
+    enabled: yes
+  when: apache_index.changed
