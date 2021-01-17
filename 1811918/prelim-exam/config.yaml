@@ -1,0 +1,10 @@
+---
+- hosts: all
+  vars:
+    item: alcid1
+    motd: alcid
+  roles:
+    - python
+    - java
+    - changemotd
+    - createuser
