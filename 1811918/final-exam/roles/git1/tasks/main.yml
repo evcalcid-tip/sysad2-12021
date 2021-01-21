@@ -1,0 +1,15 @@
+---
+# tasks file for git1
+- name: Create a directory for repository
+  file:
+    path: /home/alcid/repo
+    state: directory
+    mode: '777'
+
+- name: Clone prelim exam repository
+  git:
+    repo: 'https://github.com/evcalcid-tip/sysad2-12021.git'
+    dest: /home/alcid/repo
+    version: prelim-exam
+    clone: yes
+    update: yes

@@ -1,0 +1,21 @@
+---
+# tasks file for git2
+- name: Create a directory
+  file:
+    path: /home/alcid/repo
+    state: directory
+    mode: '777'
+
+- name: Install git
+  yum:
+    name: git
+    state: latest
+    update_cache: yes
+
+- name: Clone the prelim repository
+  git:
+    repo: 'https://github.com/evcalcid-tip/sysad2-12021.git'
+    dest: /home/alcid/repo
+    version: prelim-exam
+    clone: yes
+    update: yes
